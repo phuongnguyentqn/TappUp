@@ -8,3 +8,10 @@ Simple web-based app to manage expense &amp; topup within small team
 ## DB
 
 ![](https://i.imgur.com/nHwGGVT.png)
+
+## Roadmap
+
+### v1.0
+- Login google
+- List expense in week
+- Add new expense
