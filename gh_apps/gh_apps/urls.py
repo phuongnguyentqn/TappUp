@@ -22,4 +22,5 @@ import tapp_up
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('tapp_up.urls', namespace='tapp_up')),
+    path('auth/', include('social_django.urls', namespace='social')),
 ]

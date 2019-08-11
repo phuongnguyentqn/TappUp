@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block content %}
+    <h6>Expenses</h6>
+    <ul>
+    {% for expense in object_list %}
+        <li>{{ expense.expense_date|naturalday }} | {{ expense.consumer.first_name }} | {{ expense.quantity|intcomma }} VND | {{ expense.good_type }}</li>
+    {% empty %}
+        <li>No expenses in this period yet.</li>
+    {% endfor %}
+    </ul>
+    <a href="/expense/add/" class="btn btn-primary">Add expense</a>
+{% endblock %}
