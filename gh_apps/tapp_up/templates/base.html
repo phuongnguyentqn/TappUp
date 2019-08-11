@@ -1,0 +1,49 @@
+<head>
+  <!-- Bootstrap CDN -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <!-- JQuery CDN -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+  <!-- Bootstrap date picker -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.standalone.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+  <!-- Style -->
+  <!-- <link rel="stylesheet" href="{ static 'app.css' }"> -->
+</head>
+
+<body>
+  <!-- navbar -->
+  <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-item navbar-brand" href="/"><b>TappUp</b></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarToggler">
+      <ul class="navbar-nav mr-auto"></ul>
+      <div class="navbar-item">
+        {% if not user.is_authenticated %}
+          <form id="form-login" action="/login-register" method="post" class="form-inline my-2 my-lg-0">
+            {% csrf_token %}
+            <input class="form-control mr-sm-2" name="email" type="email" required placeholder="email" aria-label="Email">
+            <input class="form-control mr-sm-2" name="password" type="password" required placeholder="password" aria-label="Password">
+            <button id="btn-login" class="btn btn-outline-success my-2 my-sm-0" type="submit">Login / Register</button>
+          </form>
+        {% else %}
+          <span class="welcome mr-1"> Welcome {{ user.email }}</span>
+          <a class="btn btn-outline-success my-2 my-sm-0 mr-1" href="/share">Share a movie</a>
+          <button id="btn-logout" class="btn btn-outline-light my-2 my-sm-0" type="button">Logout</button>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+  <!-- / navbar -->
+  <div class="container-fluid main">
+      {% block content %}
+      {% endblock %}
+  </div>
+  <script type="text/javascript">
+    var crsf_token = "{{ csrf_token }}";
+  </script>
+</body>

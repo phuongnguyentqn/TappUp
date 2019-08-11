@@ -9,7 +9,7 @@ class BaseModel(models.Model):
     """
     Base Model of Grasshopper Apps
     """
-    id = models.BigIntegerField(primary_key=True)
+    id = models.BigAutoField(primary_key=True)
     created_date = models.DateTimeField(default=None)
     modified_date = models.DateTimeField(default=None)
 

@@ -20,4 +20,4 @@ class Expense(BaseModel):
 
     def __str__(self):
         return f'{self.quantity} VND by User[{self.consumer}]' \
-            ' on {self.good_type} at {self.expense_date}'
+            f' on {self.good_type} at {self.expense_date}'
