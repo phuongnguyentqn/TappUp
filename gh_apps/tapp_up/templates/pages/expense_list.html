@@ -2,12 +2,25 @@
 {% load humanize %}
 {% block content %}
     <h6>Expenses</h6>
-    <ul>
-    {% for expense in object_list %}
-        <li>{{ expense.expense_date|naturalday }} | {{ expense.consumer.first_name }} | {{ expense.quantity|intcomma }} VND | {{ expense.good_type }}</li>
-    {% empty %}
-        <li>No expenses in this period yet.</li>
-    {% endfor %}
-    </ul>
+    <table class="table table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Grasshopper</th>
+            <th scope="col">Category</th>
+            <th scope="col">Quantity</th>
+          </tr>
+        </thead>
+        {% for expense in object_list %}
+            <tr>
+                <th scope="row">{{ expense.expense_date|date:"l d-m-Y" }}</th>
+                <td>{{ expense.consumer.full_name }}</td>
+                <td><span class="badge badge-info">{{ expense.good_type.name }}</span></td>
+                <td>{{ expense.quantity|intcomma }} VND</td>
+            </tr>
+        {% empty %}
+            <li>No expenses in this period yet.</li>
+        {% endfor %}
+    </table>
     <a href="/expense/add/" class="btn btn-primary">Add expense</a>
 {% endblock %}

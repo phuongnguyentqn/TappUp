@@ -17,6 +17,9 @@
     .main {
       padding: 1rem;
     }
+    .welcome {
+      color: #fff;
+    }
   </style>
 </head>
 
@@ -28,7 +31,17 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarToggler">
-      <ul class="navbar-nav mr-auto"></ul>
+      <ul class="navbar-nav mr-auto">
+        <div class="navbar-item">
+          <a href="/expenses/" class="nav-link">Expenses</a>
+        </div>
+        <div class="navbar-item">
+          <a href="#" class="nav-link">Topups</a>
+        </div>
+        <div class="navbar-item">
+          <a href="#" class="nav-link">Report</a>
+        </div>
+      </ul>
       <div class="navbar-item">
         {% if not user.is_authenticated %}
           <a href="/login/" id="btn-login" class="btn btn-outline-success my-2 my-sm-0" type="submit">Login</a>

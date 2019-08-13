@@ -4,11 +4,14 @@
     <form class action="" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="Save" />
+        <input class='btn btn-primary' type="submit" value="Save" />
+        <a href="/expenses/" class="btn btn-outline btn-secondary">Cancel</a>
     </form>
     <script>
         $(function() {
-            $('.datepicker').datepicker(); 
+            $('.datepicker').datepicker({
+                dateFormat: 'dd-mm-yy'
+            }).datepicker("setDate", new Date()); 
         });
     </script>
 {% endblock %}

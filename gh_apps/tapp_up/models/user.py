@@ -18,7 +18,9 @@ class Grasshopper(AbstractUser):
 
     @property
     def full_name(self):
-        return self.get_full_name() or self.email
+        if self.first_name and self.last_name:
+            return f'{self.first_name} {self.last_name}'
+        return self.email
 
     def __str__(self):
-        return f'User[{self.email}]'
+        return self.full_name

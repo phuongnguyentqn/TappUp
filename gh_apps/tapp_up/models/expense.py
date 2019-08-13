@@ -17,21 +17,17 @@ class Category(BaseModel):
         """
         Object as string
         """
-        return f'Category[{self.name}]'
+        return f'{self.name}'
 
 
 class Expense(BaseModel):
     """
     Define all attributes and methods of Expense
     """
-    consumer = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
-    )
+    consumer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     expense_date = models.DateTimeField()
-    good_type = models.ForeignKey(
-        Category, on_delete=models.SET_NULL, null=True
-    )
+    good_type = models.ForeignKey(Category, on_delete=models.PROTECT)
 
     def __str__(self):
         return f'{self.quantity} VND by User[{self.consumer}]' \
