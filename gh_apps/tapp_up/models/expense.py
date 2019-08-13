@@ -7,6 +7,19 @@ from django.db import models
 from tapp_up.models.base import BaseModel
 
 
+class Category(BaseModel):
+    """
+    Expense category
+    """
+    name = models.CharField(max_length=128)
+
+    def __str__(self):
+        """
+        Object as string
+        """
+        return f'Category[{self.name}]'
+
+
 class Expense(BaseModel):
     """
     Define all attributes and methods of Expense
@@ -16,7 +29,9 @@ class Expense(BaseModel):
     )
     quantity = models.IntegerField()
     expense_date = models.DateTimeField()
-    good_type = models.CharField(max_length=126)
+    good_type = models.ForeignKey(
+        Category, on_delete=models.SET_NULL, null=True
+    )
 
     def __str__(self):
         return f'{self.quantity} VND by User[{self.consumer}]' \

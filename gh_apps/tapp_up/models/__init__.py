@@ -1,2 +1,2 @@
 from .user import Grasshopper
-from .expense import Expense
+from .expense import Expense, Category
