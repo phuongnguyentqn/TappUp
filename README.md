@@ -16,7 +16,10 @@ Simple web-based app to manage expense &amp; topup within small team
 - [x] List expense in week
 - [x] Add new expense
 
-### v1.3.0
+### v1.1.0
+- [ ] Add expense inline
+
+### v1.4.0
 - [ ] Add topup
 - [ ] Topup list
 - [ ] User balance
