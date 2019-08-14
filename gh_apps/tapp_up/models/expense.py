@@ -29,6 +29,9 @@ class Expense(BaseModel):
     expense_date = models.DateTimeField()
     good_type = models.ForeignKey(Category, on_delete=models.PROTECT)
 
+    class Meta:
+        ordering = ['-expense_date']
+
     def __str__(self):
         return f'{self.quantity} VND by User[{self.consumer}]' \
             f' on {self.good_type} at {self.expense_date}'
