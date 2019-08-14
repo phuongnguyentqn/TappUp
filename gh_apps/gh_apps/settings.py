@@ -25,10 +25,13 @@ SECRET_KEY = os.getenv(
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if os.getenv('ENV', 'development') == 'development':
+    DEBUG = True
 
-ALLOWED_HOSTS = []
-
+if os.getenv('ENV', 'development') == 'development':
+    ALLOWED_HOSTS = []
+else:
+    ALLOWED_HOSTS = ['tappup.herokuapp.com']
 
 # Application definition
 
@@ -133,8 +136,13 @@ STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'tapp_up.Grasshopper'
 
 # Django Social Auth
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '418502436963-pj3r5s0iglgtnrmmgdt6c7o61063ah47.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'KoQCShwPf1G7CQ6g_tKtTPl_'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv(
+    'GG_OAUTH_KEY',
+    '418502436963-pj3r5s0iglgtnrmmgdt6c7o61063ah47.apps.googleusercontent.com'
+)
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv(
+    'GG_OAUTH_SECRET', 'KoQCShwPf1G7CQ6g_tKtTPl_'
+)
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = '/'
 AUTHENTICATION_BACKENDS = (
