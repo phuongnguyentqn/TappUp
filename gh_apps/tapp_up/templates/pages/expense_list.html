@@ -11,16 +11,18 @@
             <th scope="col">Quantity</th>
           </tr>
         </thead>
-        {% for expense in object_list %}
-            <tr>
-                <th scope="row">{{ expense.expense_date|date:"l d-m-Y" }}</th>
-                <td>{{ expense.consumer.full_name }}</td>
-                <td><span class="badge badge-info">{{ expense.good_type.name }}</span></td>
-                <td>{{ expense.quantity|intcomma }} VND</td>
-            </tr>
-        {% empty %}
-            <tr>No expenses in this period yet.</tr>
-        {% endfor %}
+        <tbody>
+            {% for expense in object_list %}
+                <tr>
+                    <th scope="row">{{ expense.expense_date|date:"l d-m-Y" }}</th>
+                    <td>{{ expense.consumer.full_name }}</td>
+                    <td><span class="badge badge-info">{{ expense.good_type.name }}</span></td>
+                    <td>{{ expense.quantity|intcomma }} VND</td>
+                </tr>
+            {% empty %}
+                <tr>No expenses in this period yet.</tr>
+            {% endfor %}
+        </tbody>
     </table>
     <a href="/expense/add/" class="btn btn-primary">Add expense</a>
 {% endblock %}
