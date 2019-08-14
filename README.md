@@ -17,6 +17,6 @@ Simple web-based app to manage expense &amp; topup within small team
 - [x] Add new expense
 
 ### v1.3.0
-- [] Add topup
-- [] Topup list
-- [] User balance
+- [ ] Add topup
+- [ ] Topup list
+- [ ] User balance
