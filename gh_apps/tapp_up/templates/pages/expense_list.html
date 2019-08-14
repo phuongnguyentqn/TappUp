@@ -19,7 +19,7 @@
                 <td>{{ expense.quantity|intcomma }} VND</td>
             </tr>
         {% empty %}
-            <li>No expenses in this period yet.</li>
+            <tr>No expenses in this period yet.</tr>
         {% endfor %}
     </table>
     <a href="/expense/add/" class="btn btn-primary">Add expense</a>
