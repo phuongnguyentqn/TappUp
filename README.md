@@ -17,7 +17,10 @@ Simple web-based app to manage expense &amp; topup within small team
 - [x] Add new expense
 
 ### v1.1.0
-- [ ] Add expense inline
+- [x] Add expense inline
+
+### v1.1.1
+- [ ] Fix sync timzone between client & server
 
 ### v1.4.0
 - [ ] Add topup
