@@ -12,6 +12,7 @@ class BaseModel(models.Model):
     id = models.BigAutoField(primary_key=True)
     created_date = models.DateTimeField(default=None)
     modified_date = models.DateTimeField(default=None)
+    objects = models.Manager()
 
     class Meta:
         abstract = True

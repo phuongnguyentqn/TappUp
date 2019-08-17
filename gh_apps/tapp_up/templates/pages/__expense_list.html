@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block content %}
+    <h6>Expenses</h6>
+    <table class="table table-hover" id="table-expense">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Grasshopper</th>
+            <th scope="col">Category</th>
+            <th scope="col">Quantity</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for expense in object_list %}
+                <tr>
+                    <td>{{ expense.expense_date|date:"l d-m-Y" }}</td>
+                    <td>{{ expense.consumer.full_name }}</td>
+                    <td><span class="badge badge-info">{{ expense.good_type.name }}</span></td>
+                    <td>{{ expense.quantity|intcomma }} VND</td>
+                </tr>
+            {% empty %}
+                <tr><td>No expenses in this period yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <center><button class="btn btn-primary" id="btn-new-expense">+</button></center>
+    <script>
+        $(function() {
+            // Define selectors
+            $btnNewExpense = $('#btn-new-expense');
+            $tableExpense = $('#table-expense');
+            // Define handlers
+            $btnNewExpense.click(function(e) {
+                // TODO: https://stackoverflow.com/questions/4035966/create-a-html-table-where-each-tr-is-a-form
+                console.log('click btn new expense');
+                $tableExpense.find('tbody').append(
+                    '<tr>'
+                        + '<form method="post" action="/expenses/add/">'
+                            + '<td><input class="form-control date datepicker" name="consume_date" data-date-format="DD dd-mm-yy" required></td>'
+                            + '<td><input class="form-control" name="consumer" required></td>'
+                            + '<td><input class="form-control" name="category" required></td>'
+                            + '<td><input class="form-control" name="quantity" required></td>'
+                            + '<input type="hidden" name="csrfmiddlewaretoken" value="' + crsf_token +'">'
+                            + '<td><input class="btn btn-primary" type="submit" value="Save" /></td>'
+                        + '</form>'
+                    + '</tr>'
+                );
+                $('.datepicker').datepicker({
+                    // dateFormat: 'dd-mm-yy'
+                }).datepicker("setDate", new Date());
+            });
+        });
+    </script>
+{% endblock %}

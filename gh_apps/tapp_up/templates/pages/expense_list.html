@@ -1,28 +1,214 @@
 {% extends 'base.html' %}
 {% load humanize %}
 {% block content %}
-    <h6>Expenses</h6>
-    <table class="table table-hover">
-        <thead class="thead-dark">
+<!-- Editable table -->
+<style>
+  .pt-3-half {
+    padding-top: 1.4rem !important;
+  }
+  input {
+    text-align: center;
+  }
+  .form-control {
+    text-align: center;
+  }
+</style>
+<div class="card">
+  <h3 class="card-header text-center font-weight-bold text-uppercase py-4">Transactions</h3>
+  <div class="card-body">
+    <div id="table" class="table-editable">
+      <table class="table table-bordered table-responsive-md table-striped text-center">
+        <thead>
           <tr>
-            <th scope="col">Date</th>
-            <th scope="col">Grasshopper</th>
-            <th scope="col">Category</th>
-            <th scope="col">Quantity</th>
+            <th class="text-center">Date</th>
+            <th class="text-center">Grasshopper</th>
+            <th class="text-center">Category</th>
+            <th class="text-center">Amount</th>
+            <!-- <th class="text-center">Remove</th> -->
           </tr>
         </thead>
         <tbody>
-            {% for expense in object_list %}
-                <tr>
-                    <th scope="row">{{ expense.expense_date|date:"l d-m-Y" }}</th>
-                    <td>{{ expense.consumer.full_name }}</td>
-                    <td><span class="badge badge-info">{{ expense.good_type.name }}</span></td>
-                    <td>{{ expense.quantity|intcomma }} VND</td>
-                </tr>
-            {% empty %}
-                <tr>No expenses in this period yet.</tr>
-            {% endfor %}
+          {% for expense in expense_list %}
+            <tr>
+              <td class="pt-3-half expense_date" data-value="{{expense.expense_date}}" data-display="{{ expense.expense_date|date:'l d-m-Y' }}">
+                {{ expense.expense_date|date:"l d-m-Y" }}
+              </td>
+              <td class="pt-3-half consumer" data-value="{{ expense.consumer.id }}" data-display="{{ expense.consumer.full_name }}">
+                {{ expense.consumer.full_name }}
+              </td>
+              <td class="pt-3-half category" data-value="{{ expense.category.id }}" data-display="{{ expense.category.name }}">
+                <span class="badge badge-info">{{ expense.category.name }}</span>
+              </td>
+              <td class="pt-3-half amount" data-value="{{expense.quantity}}" data-display="{{ expense.quantity|intcomma }} VND">
+                {{ expense.quantity|intcomma }} VND
+              </td>
+              <!-- <td>
+                <span class="table-remove">
+                  <button disabled type="button" class="btn btn-warning btn-rounded btn-sm my-0">Edit</button>
+                </span>
+              </td> -->
+            </tr>
+          {% endfor %}
+          <!-- This is our clonable table line -->
         </tbody>
-    </table>
-    <a href="/expense/add/" class="btn btn-primary">Add expense</a>
+      </table>
+      <center>
+        <span class="table-add mb-3 mr-2"><a href="#!" class="text-success">
+          <i class="fas fa-plus fa-2x" aria-hidden="true"></i></a>
+        </span>
+        <span class="table-submit mb-3 mr-2" style="display: none;"><a href="#!" class="text-success">
+          <i class="fas fa-check fa-2x" aria-hidden="true"></i></a>
+        </span>
+      </center>
+    </div>
+  </div>
+</div>
+<script>
+  const $tableID = $('#table');
+  const $tableAddBtn = $('.table-add');
+  const $tableSubmitBtn = $('.table-submit');
+  const $BTN = $('#export-btn');
+  const $EXPORT = $('#export');
+
+  sroll_bottom();
+
+  $tableAddBtn.on('click', 'i', () => {
+    const $clone = $tableID.find('tbody tr').last();
+    // New editable row templates
+    const newTr = `
+      <tr class="hide new-row">
+        <td class="pt-3-half expense_date" contenteditable="false">
+        `+ expense_date_input() +`
+        </td>
+        <td class="pt-3-half consumer" contenteditable="false">
+        `+ consumer_select() +`
+        </td>
+        <td class="pt-3-half category" contenteditable="false">
+        `+ category_select({
+          value: $clone.find('.category').data('value'),
+          display: $clone.find('.category').data('display'),
+        }) +`
+        </td>
+        <td class="pt-3-half amount" >
+        `+ quantity_input($clone.find('.amount').data('value')) +`
+        </td>
+        <input class="form-control" type="hidden" name="csrfmiddlewaretoken" value="`
+        + get_cookie('csrftoken') +`">
+      </tr>
+    `;
+    $tableID.find('table').append(newTr);
+    // Bind bootstrap datepicker
+    $('#inputDate').datetimepicker({
+      format: 'Y-m-d H:m:s',
+      value: new Date(),
+    });
+    // Disable button add, user should add one by one
+    $tableAddBtn.hide();
+    $tableSubmitBtn.show();
+    sroll_bottom();
+  });
+
+  $tableSubmitBtn.on('click', 'i', () => {
+    $tableSubmitBtn.hide();
+    $tableAddBtn.show();
+    // Get data
+    const data = get_new_data();
+    console.log(data);
+    $.ajax({
+      url: '/expense/add/',
+      method: 'POST',
+      data: data,
+      success: res => {
+        console.log(res);
+        remove_editable_row();
+        add_new_row(res);
+      },
+      error: (xhr, ajaxOptions, thrownError) => {
+        alert(xhr.responseText);
+        handle_error();
+      }
+    });
+  });
+
+  const handle_error = () => {
+    $tableSubmitBtn.show();
+    $tableAddBtn.hide();
+  }
+
+  const remove_editable_row = () => {
+    $('.new-row').remove();
+  }
+
+  const add_new_row = data => {
+    var expense_date = new Date(data.expense_date);
+    const new_row = `
+    <tr>
+      <td class="pt-3-half expense_date" data-value="`+ data.expense_date +`" data-display="`+ data.expense_date +`">
+        `+ expense_date.toDateString() +`
+      </td>
+      <td class="pt-3-half consumer" data-value="`+ data.consumer.id +`" data-display="`+ data.consumer.full_name +`">
+        `+ data.consumer.full_name +`
+      </td>
+      <td class="pt-3-half category" data-value="`+ data.category.id +`" data-display="`+ data.category.name +`">
+        <span class="badge badge-info">`+ data.category.name +`</span>
+      </td>
+      <td class="pt-3-half amount" data-value="`+ data.quantity +`" data-display="`+ data.quantity +` VND">
+        `+ data.quantity +`VND
+      </td>
+      <!-- <td>
+        <span class="table-remove">
+          <button disabled type="button" class="btn btn-warning btn-rounded btn-sm my-0">Edit</button>
+        </span>
+      </td> -->
+    </tr>`;
+    $tableID.find('table tbody').append(new_row);
+  }
+
+  function get_new_data() {
+    const $inputs = $('.new-row .form-control');
+    var data = {};
+    $inputs.each((idx, element) => {
+      data[element.name] = element.value;
+    });
+    return data;
+  }
+
+  function expense_date_input() {
+    return `
+    <input required name="expense_date"
+      id="inputDate" class="form-control datetimepicker">
+    `;
+  }
+
+  function consumer_select() {
+    const consumers = JSON.parse(`{{consumers|safe}}`);
+    var options = '<option selected="selected">---------</option>';
+    consumers.forEach(consumer => {
+      options = options + `<option value="`+ consumer.id +`">`+ consumer.full_name +`</option>`;
+    });
+    return `<select required name="consumer" class="form-control">` + options +`</select>`;
+  }
+
+  function category_select(selected={}) {
+    const categories = JSON.parse(`{{categories|safe}}`);
+    var options = '';
+    categories.forEach(category => {
+      if (category.id == selected.value) {
+        options = options + `<option selected="selected" value="`+ category.id +`">`+ category.name +`</option>`;
+      } else {
+        options = options + `<option value="`+ category.id +`">`+ category.name +`</option>`;
+      }
+    });
+    return `<select required name="category" class="form-control">` + options +`</select>`;
+  }
+
+  function quantity_input(default_value) {
+    return `<input type="number" value="` + parseInt(default_value) + `" class="form-control" name="quantity" required>`;
+  }
+
+  function sroll_bottom() {
+    $("html, body").animate({ scrollTop: $(document).height() }, 1000);
+  }
+</script>
+<!-- Editable table -->
 {% endblock %}
